@@ -51,7 +51,7 @@ def is_logged_out(f):
 def is_admin(f):
     @wraps(f)
     def wrap(*args , **kwargs):
-        if session['username']=="ADMIN":
+        if session['email']=="ADMIN":
             return redirect('/admin')
         else:
             return f(*args , **kwargs)
@@ -60,7 +60,7 @@ def is_admin(f):
 def is_admined(f):
     @wraps(f)
     def wrap(*args , **kwargs):
-        if session['username'] !="ADMIN":
+        if session['email'] !="ADMIN":
             return redirect('/')
         
         else:
@@ -127,7 +127,7 @@ def login():
             if pbkdf2_sha256.verify(pw,users[4] ):
                 session['is_logged'] = True
                 session['email'] = users[3]
-                print(session)
+                print(session) 
                 return redirect('/')
             else:
                 return redirect(url_for('login'))

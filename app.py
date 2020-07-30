@@ -3,8 +3,7 @@ from flask import Flask ,render_template , flash , redirect , url_for, session, 
 import pymysql
 from passlib.hash import pbkdf2_sha256
 from functools import wraps
-app = Flask(__name__)
-app.debug=True
+app = Flask(__name__ , static_url_path='/static')
 
 
 db = pymysql.connect(host='localhost', 

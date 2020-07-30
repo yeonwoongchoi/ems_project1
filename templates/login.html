@@ -22,17 +22,18 @@
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
                                     <div class="card-header"><h3 class="text-center font-weight-light my-4">Login Page</h3></div>
                                     <div class="card-body">
-                                        <form>
+                                        <form method="POST" action = "/login">
                                             <div class="form-group">
                                                 <label class="small mb-1" for="inputEmailAddress">Username</label>
-                                                <input class="form-control py-4" id="inputEmailAddress" type="email" placeholder="Enter username" />
+                                                <input class="form-control py-4" id="inputEmailAddress" type="text" name="username" placeholder="Enter username" />
                                             </div>
                                             <div class="form-group">
                                                 <label class="small mb-1" for="inputPassword">Password</label>
-                                                <input class="form-control py-4" id="inputPassword" type="password" placeholder="Enter password" />
+                                                <input class="form-control py-4" id="inputPassword" type="password" name="password" placeholder="Enter password" />
                                             </div>
                                             <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                <a class="btn btn-primary" href="index.html" style = "width:450px;height:100";>Login</a>
+                                                <!-- <a class="btn btn-primary" href="/" style = "width:450px;height:100";>Login</a> -->
+                                                <input type="submit"class="btn btn-primary" style = "width:450px;height:100"; value="Login">
                                             </div>
                                         </form>
                                     </div>

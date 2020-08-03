@@ -1,132 +1,145 @@
-{% extends 'layouts.html' %}
+{% extends "bootstrap/base.html" %}
+{% block title %}Flask-MQTT example{% endblock %}
 
-{% block body %}
+{% block styles %}
+{{ super() }}
+{% endblock %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Database</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="static/img/icons/favicon.ico"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="static/vendor/bootstrap/css/bootstrap.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="static/fontawesome/font-awesome-4.7.0/css/font-awesome.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="static/vendor/animate/animate.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="static/vendor/select2/select2.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="static/vendor/perfect-scrollbar/perfect-scrollbar.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="static/css/util.css">
-	<link rel="stylesheet" type="text/css" href="static/css/main.css">
-<!--===============================================================================================-->
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
 
-    <style>
-     body{
-            background-image:url('static/img/pop-bg.jpg');
-            background-size:cover;
-          }
-    </style>
+    $('#publish').click(function(event) {
+      var topic = $('#topic').val();
+      var message = $('#message').val();
+      var qos = $('#qos').val();
+      var data = '{"topic": "' + topic + '", "message": "' + message + '", "qos": ' + qos + '}';
+      socket.emit('publish', data=data);
+    });
 
+    $('#subscribe').click(function(event) {
+      var topic = $('#subscribe_topic').val();
+      var qos = $('#subscribe_qos').val();
+      var data = '{"topic": "' + topic + '", "qos": ' + qos + '}';
+      socket.emit('subscribe', data=data);
+      $('#subscribe').hide();
+      $('#unsubscribe').show();
+      $('#subscribe_topic').prop('readonly', true);
+    });
 
+    $('#unsubscribe').click(function(event) {
+      socket.emit('unsubscribe_all');
+      $('#subscribe').show();
+      $('#unsubscribe').hide();
+      $('#subscribe_topic').prop('readonly', false);
+    });
 
-</head>
-<body>
-	
-	<div class="limiter">
-		<!-- <div class="container-table100"> -->
-			<div class="wrap-table100">
-				<div class="table100 ver1 m-b-110">
-					<table data-vertable="ver1" style='width:70%;height:100px;margin-left:100px;margin-top:80px'>
-						<thead>
-							<tr class="row100 head">
-								<th class="column100 column1" data-column="column1" style='text-align:center;'>Time</th>
-								<th class="column100 column2" data-column="column2" style='text-align:center;'>Temperature (온도)</th>
-								<th class="column100 column3" data-column="column3" style='text-align:center;'>Humidity (습도)</th>
-								<th class="column100 column4" data-column="column4" style='text-align:center;'>Cds Cell (조도)</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr class="row100">
-								<td class="column100 column1" data-column="column1" style='text-align:center;'>Lawrence Scott</td>
-								<td class="column100 column2" data-column="column2" style='text-align:center;'>8:00 AM</td>
-								<td class="column100 column3" data-column="column3" style='text-align:center;'>--</td>
-								<td class="column100 column4" data-column="column4" style='text-align:center;'>--</td>
-							</tr>
+    socket.on('mqtt_message', function(data) {
+      console.log(data);
+      var text = '(' + data['topic'] + ' qos: ' + data['qos'] + ') ' + data['payload'];
+      var $textarea = $('#subscribe_messages');
+      $textarea.val($textarea.val() + text + '\n');
+    })
+  });
+</script>
+{% endblock %}
 
-							<tr class="row100">
-								<td class="column100 column1" data-column="column1" style='text-align:center;'>Jane Medina</td>
-								<td class="column100 column2" data-column="column2" style='text-align:center;'>--</td>
-								<td class="column100 column3" data-column="column3" style='text-align:center;'>5:00 PM</td>
-								<td class="column100 column4" data-column="column4" style='text-align:center;'>5:00 PM</td>
-							</tr>
-
-							<tr class="row100">
-								<td class="column100 column1" data-column="column1" style='text-align:center;'>Billy Mitchell</td>
-								<td class="column100 column2" data-column="column2" style='text-align:center;'>9:00 AM</td>
-								<td class="column100 column3" data-column="column3" style='text-align:center;'>--</td>
-								<td class="column100 column4" data-column="column4" style='text-align:center;'>--</td>
-							</tr>
-
-							<tr class="row100">
-								<td class="column100 column1" data-column="column1" style='text-align:center;'>Beverly Reid</td>
-								<td class="column100 column2" data-column="column2" style='text-align:center;'>--</td>
-								<td class="column100 column3" data-column="column3" style='text-align:center;'>5:00 PM</td>
-								<td class="column100 column4" data-column="column4" style='text-align:center;'>5:00 PM</td>
-							</tr>
-
-							<tr class="row100">
-								<td class="column100 column1" data-column="column1" style='text-align:center;'>Tiffany Wade</td>
-								<td class="column100 column2" data-column="column2" style='text-align:center;'>8:00 AM</td>
-								<td class="column100 column3" data-column="column3" style='text-align:center;'>--</td>
-								<td class="column100 column4" data-column="column4" style='text-align:center;'>--</td>
-							</tr>
-
-							<tr class="row100">
-								<td class="column100 column1" data-column="column1" style='text-align:center;'>Sean Adams</td>
-								<td class="column100 column2" data-column="column2" style='text-align:center;'>--</td>
-								<td class="column100 column3" data-column="column3" style='text-align:center;'>5:00 PM</td>
-								<td class="column100 column4" data-column="column4" style='text-align:center;'>5:00 PM</td>
-							</tr>
-
-							<tr class="row100">
-								<td class="column100 column1" data-column="column1" style='text-align:center;'>Rachel Simpson</td>
-								<td class="column100 column2" data-column="column2" style='text-align:center;'>9:00 AM</td>
-								<td class="column100 column3" data-column="column3" style='text-align:center;'>--</td>
-								<td class="column100 column4" data-column="column4" style='text-align:center;'>--</td>
-							</tr>
-
-							<tr class="row100">
-								<td class="column100 column1" data-column="column1" style='text-align:center;'>Mark Salazar</td>
-								<td class="column100 column2" data-column="column2" style='text-align:center;'>8:00 AM</td>
-								<td class="column100 column3" data-column="column3" style='text-align:center;'>--</td>
-								<td class="column100 column4" data-column="column4" style='text-align:center;'>--</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		<!-- </div> -->
-	</div>
-
-
-	
-
-
-	<script src="static/vendor/jquery/jquery-3.2.1.min.js"></script>
-
-	<script src="static/vendor/bootstrap/js/popper.js"></script>
-	<script src="static/vendor/bootstrap/js/bootstrap.min.js"></script>
-
-	<script src="static/vendor/select2/select2.min.js"></script>
-
-	<script src="static/js/datab.js"></script>
-
-</body>
-</html>
-
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12">
+      <h1>Flask-MQTT Example</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Publish MQTT Message</h3>
+        </div>
+        <div class="panel-body">
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Topic: </label>
+                  <div class="col-xs-8">
+                    <input id="topic" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Message: </label>
+                  <div class="col-xs-8">
+                    <input id="message" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Qos: </label>
+                  <div class="col-xs-8">
+                    <select id="qos" class="form-control">
+                      <option value=0>0</option>
+                      <option value=1>1</option>
+                      <option value=2>2</option>
+                    </select>
+                  </div> 
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-8 col-xs-offset-4">
+                    <button id="publish" class="btn btn-primary">Publish</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Subscribe MQTT Messages</h3>
+        </div>
+        <div class="panel-body">
+          <div class="col-xs-12">
+            <div class="row">
+              <div class="form-horizontal">
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Topic:</label>
+                  <div class="col-xs-8">
+                    <input id="subscribe_topic" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Qos: </label>
+                  <div class="col-xs-8">
+                    <select id="subscribe_qos" class="form-control">
+                      <option value=0>0</option>
+                      <option value=1>1</option>
+                      <option value=2>2</option>
+                    </select>
+                  </div> 
+                </div>
+                <div class="form-group">
+                  <div class="col-xs-8 col-xs-offset-4">
+                    <button id="subscribe" class="btn btn-primary">Subscribe</button>
+                    <button id="unsubscribe" class="btn btn-default" style="display: none;" >Unsubscribe</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label col-xs-4">Messages:</label>
+                  <div class="col-xs-8">
+                    <textarea id="subscribe_messages" class="form-control" rows=10></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

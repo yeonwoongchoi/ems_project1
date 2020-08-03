@@ -3,9 +3,37 @@ import pymysql
 from passlib.hash import pbkdf2_sha256 as pbk
 from functools import wraps
 
+import logging
+import eventlet
+import json
+from flask_mqtt import Mqtt
+from flask_socketio import SocketIO
+from flask_bootstrap import Bootstrap
+
+eventlet.monkey_patch()
 
 app = Flask(__name__)
+app.config['SECRET'] = 'my secret key'
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['MQTT_BROKER_URL'] = 'localhost'
+app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_CLIENT_ID'] = 'flask_mqtt'
+app.config['MQTT_CLEAN_SESSION'] = True
+app.config['MQTT_USERNAME'] = ''
+app.config['MQTT_PASSWORD'] = ''
+app.config['MQTT_KEEPALIVE'] = 5
+app.config['MQTT_TLS_ENABLED'] = False
+app.config['MQTT_LAST_WILL_TOPIC'] = 'home/lastwill'
+app.config['MQTT_LAST_WILL_MESSAGE'] = 'bye'
+app.config['MQTT_LAST_WILL_QOS'] = 2
 app.debug=True
+
+
+# Parameters for SSL enabled
+# app.config['MQTT_BROKER_PORT'] = 8883
+# app.config['MQTT_TLS_ENABLED'] = True
+# app.config['MQTT_TLS_INSECURE'] = True
+# app.config['MQTT_TLS_CA_CERTS'] = 'ca.crt'
 
 
 db = pymysql.connect(host='localhost', 
@@ -13,6 +41,13 @@ db = pymysql.connect(host='localhost',
                         user='root', 
                         passwd='1234', 
                         db='team2')
+
+
+
+mqtt = Mqtt(app)
+socketio = SocketIO(app)
+bootstrap = Bootstrap(app)
+
 
 def is_logged_in(f):
     @wraps(f)
@@ -33,10 +68,42 @@ def is_logged_out(f):
     return wrap
 
 
+
+@socketio.on('publish')
+def handle_publish(json_str):
+    data = json.loads(json_str)
+    mqtt.publish(data['topic'], data['message'], data['qos'])
+
+
+@socketio.on('subscribe')
+def handle_subscribe(json_str):
+    data = json.loads(json_str)
+    mqtt.subscribe(data['topic'], data['qos'])
+
+
+@socketio.on('unsubscribe_all')
+def handle_unsubscribe_all():
+    mqtt.unsubscribe_all()
+
+
+@mqtt.on_message()
+def handle_mqtt_message(client, userdata, message):
+    data = dict(
+        topic=message.topic,
+        payload=message.payload.decode(),
+        qos=message.qos,
+    )
+    socketio.emit('mqtt_message', data=data)
+
+@mqtt.on_log()
+def handle_logging(client, userdata, level, buf):
+    # print(level, buf)
+    pass
+
+
 @app.route('/')
 @is_logged_in
 def home():
-    
     return render_template('home.html')
 
 @app.route('/register', methods=['GET','POST'])
@@ -78,7 +145,7 @@ def login():
 
         if users==None:
             print("유저가 없다")
-            return redirect(url_for('login'))
+            return render_template('login.html')
         else:
             if pbk.verify(pw, users[4]):
                 session['username'] = users[3]
@@ -87,14 +154,14 @@ def login():
                 return redirect(url_for('home'))
             else:
                 print("정보가 다릅니다")
-                return redirect(url_for('login'))
+                return render_template('login.html')
 
         return 'Success'
     else:
         print('실행안됨')
         return render_template("login.html")
    
-    return render_template("login2.html")
+    return render_template("login.html")
 
 @app.route('/logout')
 @is_logged_in
@@ -103,10 +170,9 @@ def logout():
     # print(session['is_logged'], session['username'])
     return redirect(url_for('home'))
 
+
 @app.route('/database')
-@is_logged_in
 def database():
-    sql = 'SELECT %s %s %s %s FROM '
     return render_template('database.html')
 
 
@@ -118,4 +184,5 @@ def database():
 
 if __name__ == '__main__':
     app.secret_key = '1234'
-    app.run(host='0.0.0.0', port='8000')
+    # app.run(host='0.0.0.0', port='8000')
+    socketio.run(app, host='0.0.0.0', port=8000, use_reloader=False, debug=True)

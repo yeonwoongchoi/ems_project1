@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+  {% if session['is_logged'] %}
+  <a class="navbar-brand" href="/" style = "font-size: 30px; color:#ffffff">Welcome!&nbsp;&nbsp; {{ session['username'] }}</a>
+  {% else %}
+  <a class="navbar-brand" href="/" style = "font-size: 30px; color:#ffffff">Welcome!&nbsp;&nbsp; Guest </a>
+  {% endif %}
+  <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button> -->
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <div>
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/" style = "font-size: 20px; color:#ffffff">&nbsp;&nbsp;|&nbsp;&nbsp;Home <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+    </div>
+    <div>
+      <ul class="navbar-nav">
+        {% if 'is_logged' in session %}
+        <li class="nav-item">
+          <a class="nav-link" href="/logout" style = "font-size: 20px; color:#ffffff;position:absolute; left:1330px; top:13px;">Logout&nbsp;&nbsp;|</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/register" style = "font-size: 20px; color:#ffffff;text-align:right;position:absolute; left:1420px; top:13px;">&nbsp;Register</a>
+        </li>
+        {% else %}
+        <!-- <li class="nav-item">
+          <a class="nav-link" href="/login" style = "font-size: 20px; color:#ffffff;text-align:right;position:absolute; left:1420px; top:13px;">Login</a>
+        </li> -->
+        {% endif %}
+      
+    </ul>
+    </div>
+  </div>
+</nav>

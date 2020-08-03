@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+
+
+</head>
+<body>
+    <h1>Chartjs 활용</h1>
+    <canvas id="IotChart"></canvas>
+    <script>
+        var ctx = document.getElementById('IotChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September'],
+        datasets: [{
+            label: 'My First dataset',
+            backgroundColor: 'rgb(282828)',
+            borderColor: 'rgb(255,40,40)',
+            data: JSON.parse('{{ list_data }}')
+        }]
+    },
+    // Configuration options go here
+    options: {}
+});
+</script>
+
+</body>
+</html>

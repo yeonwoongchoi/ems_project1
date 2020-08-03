@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>EMS_Project_Home</title>
+
+    <!-- load CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300">  <!-- Google web font "Open Sans" -->
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">                                  <!-- https://getbootstrap.com/ -->
+    <link rel="stylesheet" href="static/fontawesome/css/fontawesome-all.min.css">                <!-- https://fontawesome.com/ -->
+    <link rel="stylesheet" type="text/css" href="static/slick/slick.css"/>                       <!-- http://kenwheeler.github.io/slick/ -->
+    <link rel="stylesheet" type="text/css" href="static/slick/slick-theme.css"/>
+    <link rel="stylesheet" href="static/css/tooplate-style.css">                               <!-- Templatemo style -->
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="{{url_for('static',filename='css/styles.css')}}" rel="stylesheet" />
+
+    <script>document.documentElement.className="js";var supportsCssVars=function(){var e,t=document.createElement("style");return t.innerHTML="root: { --tmp-var: bold; }",document.head.appendChild(t),e=!!(window.CSS&&window.CSS.supports&&window.CSS.supports("font-weight","var(--tmp-var)")),t.parentNode.removeChild(t),e};supportsCssVars()||alert("Please view this in a modern browser such as latest version of Chrome or Microsoft Edge.");</script>
+    
+</head>
+
+<body>
+    <header>
+        {% if session['is_logged'] %}
+        <p><div>
+            <h1 style = "padding-top:1000;font-size: 22px;color:#ffffff"> &nbsp;&nbsp; &nbsp;&nbsp;Welcome! &nbsp;&nbsp; {{ session['username'] }} </h1> 
+        </div></p>
+        <!-- <div>        
+            <i class="fas fa-sign-out-alt"></i><a class="tm-nav-link" href = "/logout" role="button" style = "font-size:16px;color:#ffffff;">&nbsp;&nbsp;Logout
+         </i>
+        </div></a> -->
+        {% else %}
+        <p><h1 style = "padding-top:1000;font-size: 22px;color:#ffffff"> &nbsp;&nbsp; &nbsp;&nbsp;Welcome! &nbsp;&nbsp; Guest </h1></p>
+        {% endif %}
+    </header>
+    <div id="tm-bg"></div>
+    <div id="tm-wrap">
+        <div class="tm-main-content">
+            <div class="container tm-site-header-container">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-6 col-md-col-xl-6 mb-md-0 mb-sm-4 mb-4 tm-site-header-col">
+                        <div class="tm-site-header">
+                            <h1 class="mb-4"><a href ="/" style="color:#ffffff">EMS Project</h1>
+                            <img src="static/img/underline.png" class="img-fluid mb-4" style="color:#ffffff">
+                            <p>Step_1 : Smart Farm</p>        
+                        </div>                        
+                    </div>
+                          <!--   -----                      -->
+                {% if session['is_logged'] %}          
+                    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                        <div class="content">
+                            <div class="grid">
+                                <div class="grid__item" id="home-link">
+                                    <div class="product">
+                                        <div class="tm-nav-link">
+                                            <i class="fas fa-database fa-3x tm-nav-icon"></i><br>
+                                            <p class="tm-nav-text"><a href = "/database" style = "color:#ffffff">Database</p>
+                                            <div class="product__bg">
+                                            </div></a>  
+                                        </div>
+                                                                           
+                                        <div class="product__description">                                  
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid__item" id="team-link">
+                                    <div class="product">
+                                        <div class="tm-nav-link">
+                                            <i class="fas fa-sign-in-alt fa-3x tm-nav-icon"></i><br>
+                                            <p class="tm-nav-text"><a href = "/logout" style = "color:#ffffff">Logout</p>
+                                            <div class="product__bg">
+                                            </div></a> 
+                                        </div>                                     
+                                        <div class="product__description">  
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid__item">
+                                    <div class="product">
+                                        <div class="tm-nav-link">
+                                            <i class="fas fa-handshake fa-3x tm-nav-icon"></i><br>
+                                            <p class="tm-nav-text">Our Work</p>
+                                            <div class="product__bg"></div>             
+                                        </div>                                                                      
+                                    </div>
+                                </div>
+
+                                <div class="grid__item">
+                                    <div class="product">
+                                        <div class="tm-nav-link">
+                                            <i class="fas fa-comments fa-3x tm-nav-icon"></i><br>
+                                            <p class="tm-nav-text">Contact</p>
+                                            <div class="product__bg"></div>             
+                                        </div>                                                              
+                                    </div>
+                                </div>
+                            </div> 
+                        </div> 
+                    </div>
+                         <!--   -----                      -->
+
+                {% else %}
+                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                    <div class="content">
+                        <div class="grid">
+                            <div class="grid__item" id="home-link">
+                                <div class="product">
+                                    <div class="tm-nav-link">
+                                        <i class="fas fa-database fa-3x tm-nav-icon"></i><br>
+                                        <p class="tm-nav-text"><a href = "/" style = "color:#ffffff">Database</p>
+                                        <div class="product__bg">
+                                        </div></a>  
+                                    </div>
+                                                                       
+                                    <div class="product__description">                                  
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid__item" id="team-link">
+                                <div class="product">
+                                    <div class="tm-nav-link">
+                                        <i class="fas fa-sign-in-alt fa-3x tm-nav-icon"></i><br>
+                                        <p class="tm-nav-text"><a href = "/login" style = "color:#ffffff">Login</p>
+                                        <div class="product__bg">
+                                        </div></a> 
+                                    </div>                                     
+                                    <div class="product__description">  
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid__item">
+                                <div class="product">
+                                    <div class="tm-nav-link">
+                                        <i class="fas fa-handshake fa-3x tm-nav-icon"></i><br>
+                                        <p class="tm-nav-text">Our Work</p>
+                                        <div class="product__bg"></div>             
+                                    </div>                                                                      
+                                </div>
+                            </div>
+
+                            <div class="grid__item">
+                                <div class="product">
+                                    <div class="tm-nav-link">
+                                        <i class="fas fa-comments fa-3x tm-nav-icon"></i><br>
+                                        <p class="tm-nav-text">Contact</p>
+                                        <div class="product__bg"></div>             
+                                    </div>                                                              
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>  
+                {% endif %}
+
+
+
+
+                </div>                
+            </div>
+
+        </div> <!-- .tm-main-content -->  
+    </div>
+    <!-- load JS -->
+    <script src="js/jquery-3.2.1.slim.min.js"></script>         <!-- https://jquery.com/ -->    
+    <script src="slick/slick.min.js"></script>                  <!-- http://kenwheeler.github.io/slick/ -->  
+    <script src="js/anime.min.js"></script>                     <!-- http://animejs.com/ -->
+    <script src="js/main.js"></script>  
+    <script>      
+
+        function setupFooter() {
+            var pageHeight = $('.tm-site-header-container').height() + $('footer').height() + 100;
+
+            var main = $('.tm-main-content');
+
+            if($(window).height() < pageHeight) {
+                main.addClass('tm-footer-relative');
+            }
+            else {
+                main.removeClass('tm-footer-relative');   
+            }
+        }
+
+        /* DOM is ready
+        ------------------------------------------------*/
+        $(function(){
+
+            setupFooter();
+
+            $(window).resize(function(){
+                setupFooter();
+            });
+
+            $('.tm-current-year').text(new Date().getFullYear());  // Update year in copyright           
+        });
+
+    </script>             
+
+</body>
+</html>

@@ -1,0 +1,132 @@
+{% extends 'layouts.html' %}
+
+{% block body %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Database</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" href="static/img/icons/favicon.ico"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/fontawesome/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/vendor/animate/animate.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/vendor/select2/select2.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/vendor/perfect-scrollbar/perfect-scrollbar.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="static/css/util.css">
+	<link rel="stylesheet" type="text/css" href="static/css/main.css">
+<!--===============================================================================================-->
+
+    <style>
+     body{
+            background-image:url('static/img/pop-bg.jpg');
+            background-size:cover;
+          }
+    </style>
+
+
+
+</head>
+<body>
+	
+	<div class="limiter">
+		<!-- <div class="container-table100"> -->
+			<div class="wrap-table100">
+				<div class="table100 ver1 m-b-110">
+					<table data-vertable="ver1" style='width:70%;height:100px;margin-left:100px;margin-top:80px'>
+						<thead>
+							<tr class="row100 head">
+								<th class="column100 column1" data-column="column1" style='text-align:center;'>Time</th>
+								<th class="column100 column2" data-column="column2" style='text-align:center;'>Temperature (온도)</th>
+								<th class="column100 column3" data-column="column3" style='text-align:center;'>Humidity (습도)</th>
+								<th class="column100 column4" data-column="column4" style='text-align:center;'>Cds Cell (조도)</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="row100">
+								<td class="column100 column1" data-column="column1" style='text-align:center;'>Lawrence Scott</td>
+								<td class="column100 column2" data-column="column2" style='text-align:center;'>8:00 AM</td>
+								<td class="column100 column3" data-column="column3" style='text-align:center;'>--</td>
+								<td class="column100 column4" data-column="column4" style='text-align:center;'>--</td>
+							</tr>
+
+							<tr class="row100">
+								<td class="column100 column1" data-column="column1" style='text-align:center;'>Jane Medina</td>
+								<td class="column100 column2" data-column="column2" style='text-align:center;'>--</td>
+								<td class="column100 column3" data-column="column3" style='text-align:center;'>5:00 PM</td>
+								<td class="column100 column4" data-column="column4" style='text-align:center;'>5:00 PM</td>
+							</tr>
+
+							<tr class="row100">
+								<td class="column100 column1" data-column="column1" style='text-align:center;'>Billy Mitchell</td>
+								<td class="column100 column2" data-column="column2" style='text-align:center;'>9:00 AM</td>
+								<td class="column100 column3" data-column="column3" style='text-align:center;'>--</td>
+								<td class="column100 column4" data-column="column4" style='text-align:center;'>--</td>
+							</tr>
+
+							<tr class="row100">
+								<td class="column100 column1" data-column="column1" style='text-align:center;'>Beverly Reid</td>
+								<td class="column100 column2" data-column="column2" style='text-align:center;'>--</td>
+								<td class="column100 column3" data-column="column3" style='text-align:center;'>5:00 PM</td>
+								<td class="column100 column4" data-column="column4" style='text-align:center;'>5:00 PM</td>
+							</tr>
+
+							<tr class="row100">
+								<td class="column100 column1" data-column="column1" style='text-align:center;'>Tiffany Wade</td>
+								<td class="column100 column2" data-column="column2" style='text-align:center;'>8:00 AM</td>
+								<td class="column100 column3" data-column="column3" style='text-align:center;'>--</td>
+								<td class="column100 column4" data-column="column4" style='text-align:center;'>--</td>
+							</tr>
+
+							<tr class="row100">
+								<td class="column100 column1" data-column="column1" style='text-align:center;'>Sean Adams</td>
+								<td class="column100 column2" data-column="column2" style='text-align:center;'>--</td>
+								<td class="column100 column3" data-column="column3" style='text-align:center;'>5:00 PM</td>
+								<td class="column100 column4" data-column="column4" style='text-align:center;'>5:00 PM</td>
+							</tr>
+
+							<tr class="row100">
+								<td class="column100 column1" data-column="column1" style='text-align:center;'>Rachel Simpson</td>
+								<td class="column100 column2" data-column="column2" style='text-align:center;'>9:00 AM</td>
+								<td class="column100 column3" data-column="column3" style='text-align:center;'>--</td>
+								<td class="column100 column4" data-column="column4" style='text-align:center;'>--</td>
+							</tr>
+
+							<tr class="row100">
+								<td class="column100 column1" data-column="column1" style='text-align:center;'>Mark Salazar</td>
+								<td class="column100 column2" data-column="column2" style='text-align:center;'>8:00 AM</td>
+								<td class="column100 column3" data-column="column3" style='text-align:center;'>--</td>
+								<td class="column100 column4" data-column="column4" style='text-align:center;'>--</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		<!-- </div> -->
+	</div>
+
+
+	
+
+
+	<script src="static/vendor/jquery/jquery-3.2.1.min.js"></script>
+
+	<script src="static/vendor/bootstrap/js/popper.js"></script>
+	<script src="static/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+	<script src="static/vendor/select2/select2.min.js"></script>
+
+	<script src="static/js/datab.js"></script>
+
+</body>
+</html>
+
+{% endblock %}

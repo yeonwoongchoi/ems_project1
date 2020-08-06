@@ -1,40 +1,21 @@
-from flask import Flask ,render_template , flash , redirect , url_for, session, request, logging
+from flask import Flask ,render_template , flash , redirect , url_for, session, request, logging, make_response
 import pymysql
 from passlib.hash import pbkdf2_sha256 as pbk
 from functools import wraps
 
 import logging
 import eventlet
+from time import time
 import json
-from flask_mqtt import Mqtt
-from flask_socketio import SocketIO
 from flask_bootstrap import Bootstrap
+import paho.mqtt.client as paho
+from datetime import datetime
+import random
+from random import random
 
-eventlet.monkey_patch()
 
 app = Flask(__name__)
-app.config['SECRET'] = 'my secret key'
-app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.config['MQTT_BROKER_URL'] = 'localhost'
-app.config['MQTT_BROKER_PORT'] = 1883
-app.config['MQTT_CLIENT_ID'] = 'flask_mqtt'
-app.config['MQTT_CLEAN_SESSION'] = True
-app.config['MQTT_USERNAME'] = ''
-app.config['MQTT_PASSWORD'] = ''
-app.config['MQTT_KEEPALIVE'] = 5
-app.config['MQTT_TLS_ENABLED'] = False
-app.config['MQTT_LAST_WILL_TOPIC'] = 'home/lastwill'
-app.config['MQTT_LAST_WILL_MESSAGE'] = 'bye'
-app.config['MQTT_LAST_WILL_QOS'] = 2
 app.debug=True
-
-
-# Parameters for SSL enabled
-# app.config['MQTT_BROKER_PORT'] = 8883
-# app.config['MQTT_TLS_ENABLED'] = True
-# app.config['MQTT_TLS_INSECURE'] = True
-# app.config['MQTT_TLS_CA_CERTS'] = 'ca.crt'
-
 
 db = pymysql.connect(host='localhost', 
                         port=3306, 
@@ -42,11 +23,9 @@ db = pymysql.connect(host='localhost',
                         passwd='1234', 
                         db='team2')
 
+name = ['']
+live_data = [0]
 
-
-mqtt = Mqtt(app)
-socketio = SocketIO(app)
-bootstrap = Bootstrap(app)
 
 
 def is_logged_in(f):
@@ -66,39 +45,6 @@ def is_logged_out(f):
         else:
             return f(*args, **kwargs)
     return wrap
-
-
-
-@socketio.on('publish')
-def handle_publish(json_str):
-    data = json.loads(json_str)
-    mqtt.publish(data['topic'], data['message'], data['qos'])
-
-
-@socketio.on('subscribe')
-def handle_subscribe(json_str):
-    data = json.loads(json_str)
-    mqtt.subscribe(data['topic'], data['qos'])
-
-
-@socketio.on('unsubscribe_all')
-def handle_unsubscribe_all():
-    mqtt.unsubscribe_all()
-
-
-@mqtt.on_message()
-def handle_mqtt_message(client, userdata, message):
-    data = dict(
-        topic=message.topic,
-        payload=message.payload.decode(),
-        qos=message.qos,
-    )
-    socketio.emit('mqtt_message', data=data)
-
-@mqtt.on_log()
-def handle_logging(client, userdata, level, buf):
-    # print(level, buf)
-    pass
 
 
 @app.route('/')
@@ -126,11 +72,13 @@ def register():
         cursor.execute(sql, (name, email, username, password))
         db.commit()
         
-        return redirect(url_for('login'))
     
+        return redirect(url_for('login'))
+
     else:
         # print("실행안됨")
         return render_template('register.html')
+        db.close()
 
 @app.route('/login', methods=['GET','POST'])
 @is_logged_out
@@ -150,6 +98,8 @@ def login():
             if pbk.verify(pw, users[4]):
                 session['username'] = users[3]
                 session['is_logged'] = True
+                name[0] = session['username']
+                print(name[0])
                 print(session['username'])
                 return redirect(url_for('home'))
             else:
@@ -162,6 +112,7 @@ def login():
         return render_template("login.html")
    
     return render_template("login.html")
+    db.close()
 
 @app.route('/logout')
 @is_logged_in
@@ -170,11 +121,77 @@ def logout():
     # print(session['is_logged'], session['username'])
     return redirect(url_for('home'))
 
+def on_connect( client, userdata, flags, rc):
+    print ("connect with result code "+str(rc))
+    client.subscribe("temp")
 
+
+
+def on_message(client, userdata, message):
+    recvData = str(message.payload.decode("utf-8"))
+    # jsonData = json.loads(recvData) #json 데이터를 dict형으로 파싱      
+    # sql_select = 'SELECT username FROM users WHERE '
+    sql_insert =    '''
+                        INSERT INTO data (username, temp) 
+                        VALUES(%s, %s)
+                    '''
+    cursor = db.cursor()
+    # cursor.execute(sql_select)
+    # username = cursor.fetchone
+    print(name[0])
+    cursor.execute(sql_insert, [name, recvData])
+    db.commit()
+
+
+    # print("recvData : "+recvData)
+     
+
+
+client = paho.Client()
+client.connect('localhost', 1883, 60)
+client.on_connect = on_connect
+client.on_message = on_message
+
+# client.loop_stop()
+
+@app.route('/data')
+@is_logged_in
+def data():
+    
+    client.loop_start()
+    client.loop_stop()   
+    
+    cursor = db.cursor()
+
+    sql_select =    '''
+                        SELECT temp From data 
+                    '''
+    cursor.execute(sql_select)
+    temp = cursor.fetchall()
+    live_data[0] = temp[-1][0]
+    # print(live_data)
+    return temp[-1][0]
+    # 데이터를 불러옴
+ 
 @app.route('/database')
+@is_logged_in
 def database():
-    return render_template('database.html')
+    return render_template("database.html")
 
+
+# @app.route('/livechart', methods=["GET", "POST"])
+# def main():
+#     return render_template('livechart.html')
+
+
+@app.route('/livechart')
+def livechart():
+    chdata = [time() * 1000, float(live_data[0])]
+    # chdata = [time() * 1000, random() * 100]
+    print(chdata)
+    response = make_response(json.dumps(chdata))
+    response.content_type = 'application/json'
+    return response
 
 # @app.route('/graph')
 # def graph():
@@ -184,5 +201,5 @@ def database():
 
 if __name__ == '__main__':
     app.secret_key = '1234'
-    # app.run(host='0.0.0.0', port='8000')
-    socketio.run(app, host='0.0.0.0', port=8000, use_reloader=False, debug=True)
+    app.run(host='0.0.0.0', port='8000')
+    # socketio.run(app, host='0.0.0.0', port=8000, use_reloader=False, debug=True)

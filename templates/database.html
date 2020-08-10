@@ -84,7 +84,7 @@
 										document.write(newSeconds + "초  ")
 									</script> -->
 									
-								<div id="divClock" class="clock"></div>
+								<div id="dpTime" class="clock">00:00 AM</div>
 
 								</td>
 								<td class="column100 column2" data-column="column2" style='text-align:center;'>
@@ -138,19 +138,42 @@
 			clearInterval(termId)
 		}
 	</script>
-	<script language="javascript">
-		function showClock(){
-			var currentDate = new Date();
-			var divClock = document.getElementById("divClock");
-			 
-			var msg =currentDate.getHours()+"시"
-			msg += currentDate.getMinutes()+"분";
-			msg += currentDate.getSeconds()+"초";
-			 
-			divClock.innerText = msg;
-			setTimeout(showClock,1000);
-		}
+
+	<script type="text/javascript">
+		
+			setInterval("dpTime()",1000);
+			function dpTime(){
+			var now = new Date();
+				hours = now.getHours();
+				minutes = now.getMinutes();
+				seconds = now.getSeconds();
+		
+			if (hours > 12)
+			{
+				hours -= 12;
+			ampm = " AM";
+			}
+			else
+			{
+				ampm = " PM";
+			}
+			if (hours < 10)
+			{
+				hours = "0" + hours;
+			}
+			if (minutes < 10)
+			{
+				minutes = "0" + minutes;
+			}
+			if (seconds < 10)
+			{
+				seconds = "0" + seconds;
+			}
+	document.getElementById("dpTime").innerHTML = hours + ":" + minutes + ":" + seconds + ampm;
+	}
+
 	</script>
+	
 
 
 	<script>
@@ -185,23 +208,28 @@
 					}
 				},
 				title: {
-					text: 'Live random data'
+					text: 'TMP Data Log'
 				},
 				xAxis: {
+					title: {
+					text: 'Time',
+					margin: 10,
+				},
 					type: 'datetime',
 					tickPixelInterval: 150,
-					maxZoom: 20 * 1000
+					maxZoom: 20 * 1000,
+					
 				},
 				yAxis: {
 					minPadding: 0.2,
 					maxPadding: 0.2,
 					title: {
 						text: 'Value',
-						margin: 80
+						margin: 10
 					}
 				},
 				series: [{
-					name: 'Random data',
+					name: 'TMP Data',
 					data: []
 				}]
 			});

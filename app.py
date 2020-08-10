@@ -10,8 +10,7 @@ import json
 from flask_bootstrap import Bootstrap
 import paho.mqtt.client as paho
 from datetime import datetime
-import random
-from random import random
+
 
 
 app = Flask(__name__)
@@ -128,6 +127,7 @@ def on_connect( client, userdata, flags, rc):
 
 
 def on_message(client, userdata, message):
+    
     recvData = str(message.payload.decode("utf-8"))
     # jsonData = json.loads(recvData) #json 데이터를 dict형으로 파싱      
     # sql_select = 'SELECT username FROM users WHERE '
